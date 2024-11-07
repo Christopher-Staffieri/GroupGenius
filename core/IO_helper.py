@@ -21,7 +21,7 @@ class IO_Helpers():
  |  '--'  | |  |\  \    `'  '-'  '('  '-'(_.-' |  |            |  '--'  |  |  `---.|  | \   |(_|  |  ('  '-'(_.-' \       / 
   `------'  `--' '--'     `-----'   `-----'    `--'             `------'   `------'`--'  `--'  `--'    `-----'     `-----'  
                                                     (Group Creation Tool)
-                                Made by Cj GH: im-solar https://github.com/im-solar/GroupGenius
+                                Made by Cj GH: im-solar https://github.com/Christopher-Staffieri/GroupGenius
         """
         
         
