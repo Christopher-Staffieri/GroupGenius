@@ -1,3 +1,4 @@
+# To anyone viewing this currently after checking the code again a few mistakes are still present I apologize profusely i am working on fixing it and making it more presentable this is not how I normally put work out and am embarrassed this happened.
 # Group Genius
 ## (Group Creation Tool)
 
