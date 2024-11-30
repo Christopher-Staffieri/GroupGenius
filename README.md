@@ -1,4 +1,4 @@
-## Program is completely fixed code could still be refactored and comments could be added but I am trying to juggle multiple projects currently so there is no ETA on when this will be done.
+## Program is completely fixed, code could still be refactored and comments could be added but I am trying to juggle multiple projects currently so there is no ETA on when this will be done.
 # Group Genius
 ## (Group Creation Tool)
 
