@@ -1,12 +1,12 @@
 
 
 # Current Version: 1.0.0  released: 9/30/23
-# Made by GH: im-solar https://github.com/im-solar/GroupGenius
+# Made by CJ: Christopher-Staffieri https://github.com/Christopher-Staffieri/GroupGenius
 # Note: This is the first version of the program bugs will occur and somethings may not be as polished.
 # Note: This is COMMAND PROMPT ONLY a gui version will be worked on but for now you get the windows console enjoy. 
 
 
-import re, time, os, datetime, csv, random, json, configparser
+import re, time, os, datetime, csv, random, json, configparser, keyboard
 import core.core as core
 from core.IO_helper import IO_Helpers
 from google_main.google_auth import google_auth
@@ -72,22 +72,45 @@ class main():
                 main_running = True
                 while main_running == True:
                     IO_Helpers.clear()
-                    IO_Helpers.print_info("Welcome to the program you have loaded a preset please choose what you would like to do next.")
+                    if session['preset_active']:
+                        IO_Helpers.print_info("Welcome to the program you have loaded a preset please choose what you would like to do next.")
+                    else:
+                         IO_Helpers.print_info("Welcome to the program please choose what you would like to do next.")
                     # Need work in order to look good.
                     # IO_Helpers.print_info(f"\t\tCurrent Preset Data: \n Names: {preset_con['student_names']}\tNumber Of Groups To Generate: {preset_con['num_of_groups']}\tCurrent Exclusion's (Cannot be in groups with eachother): {preset_con['black_list']}\tStared Names: {preset_con['stared']} ")
                     # List the current preset to show users what they are working with since some come from not using a preset
-                    option_choice = int(IO_Helpers.single_inp("[1] = Start generating groups \n [2] = Edit preset \n [3] = Login With Google"))
-                    if option_choice == 1:
-                        IO_Helpers.print_info("generating groups based off of loaded preset please wait")
-                        time.sleep(2)
-                        main.main_generation(preset_con)
-                        # create a generator function and call it here with all data needed
-                    if option_choice == 2:
-                        a = main.edit_pre()
-                        option_choice = a
+                    
+                    # option_choice = int(IO_Helpers.single_inp("[1] = Start generating groups \n [2] = Edit preset \n [3] = Login With Google"))
+                    # if option_choice == 1:
+                    #             IO_Helpers.print_info("generating groups based off of loaded preset please wait")
+                    #             time.sleep(2)
+                    #             main.main_generation(preset_con)
+                    
+                    try:
+                        option_choice = int(IO_Helpers.single_inp("[1] = Start generating groups \n [2] = Edit preset \n [3] = Login With Google"))
+                        if option_choice == 1:
+                                IO_Helpers.print_info("generating groups based off of loaded preset please wait")
+                                time.sleep(2)
+                                main.main_generation(preset_con)
+                            # create a generator function and call it here with all data needed
+                        if option_choice == 2:
+                            main.edit_pre()
+                            # option_choice = a
 
-                    else:
+                        else:
+                            main_running = True
+                        
+                    except Exception as error:
+                        print(error)
+                        IO_Helpers.warning_out('it seems like you entered an invalid option please try again')
+                        time.sleep(5)
                         main_running = True
+                    
+                        
+                        
+                        
+                        
+                    
             
     def log_in():
         IO_Helpers.print_info("Welcome to the google login page")
@@ -143,6 +166,7 @@ class main():
     def create_preset():
         IO_Helpers.print_info("Looks like you opted out of using a preset time to put everything in")
         IO_Helpers.print_info("First add all the names you want to be in the list (one at a time)")
+        preset_con['student_names'] = []
         running = True
         while running == True:
             if session['logged_in'] == True:
@@ -156,9 +180,10 @@ class main():
                     while num_check:
                         num_of_groups = int(IO_Helpers.single_inp("Please enter the amount of groups you would like to create."))
                         if core.pre_handle.g_div(num_of_groups, preset_con['student_names']) == True:
-                            choice = IO_Helpers.yn_inp(f"Are you sure you want to make {num_of_groups}?")
+                            choice = IO_Helpers.yn_inp(f"Are you sure you want to make {num_of_groups} groups?")
                             if choice == "Y":
                                 IO_Helpers.print_info(f"Sounds good when you run the generator it will make {num_of_groups} group(s)\nTaking you to the main menu. ")
+                                preset_con['num_of_groups'] = num_of_groups
                                 time.sleep(1.5)
                                 return True
                             elif choice == "N":
@@ -169,22 +194,45 @@ class main():
                     
                 elif choice == "N":
                     print("sounds good not getting your classrooms")
+                    
             else:
                 
-                names = []
-                ui = input("Please enter the name you want (type -1 to save what you have entered and goto the next option.)")
-                if ui == -1 and len(names) >= 1:
-                    print("taking you to the next option")
+                ui = IO_Helpers.single_inp("Please enter the name you want (type \"Done\" to save what you have entered and goto the next option.)")
+                # ui = input("Please enter the name you want (type \"Done\" to save what you have entered and goto the next option.)")
+                num_check = False
+                
+                if ui.lower() == "done":
+                    num_check = True
+                    while num_check:
+                        try:
+                            num_of_groups = int(IO_Helpers.single_inp("Please enter the amount of groups you would like to create."))     
+                        except Exception:
+                            IO_Helpers.warning_out('Please choose a number only nothing else')  
+                        if core.pre_handle.g_div(num_of_groups, preset_con['student_names']) == True:
+                                choice = IO_Helpers.yn_inp(f"Are you sure you want to make {num_of_groups} groups?")
+                                if choice == "Y":
+                                    IO_Helpers.print_info(f"Sounds good when you run the generator it will make {num_of_groups} group(s)\nTaking you to the main menu. ")
+                                    preset_con['num_of_groups'] = num_of_groups
+                                    time.sleep(1.5)
+                                    return True
+                                elif choice == "N":
+                                    IO_Helpers.print_info("Sounds good taking you back to choose a new number")
+                                    num_check = True    
                 else:
                     if len(ui) > 1:
                         stripped = ui.strip()
-                        print(stripped, 'is being added to the list of names')
-                        preset_con.update({'student_names': stripped})
+                        IO_Helpers.print_info(f'{stripped} is being added to the list of names')
+                        preset_con['student_names'].append(stripped)
+                        # preset_con.update({'student_names': names})
+                        
+                        
+                    
             
                 
     def edit_pre():
         IO_Helpers.print_info("Welcome to the preset editor! \n Please choose one of the options below.")
         main_editor = True
+        
         # Main Preset editor 
         while main_editor == True:
             # Main Edit Choice / what they want to do
@@ -199,16 +247,15 @@ class main():
                     
                     def edit_choice1():
                         stu_delete = True
-                        while stu_delete == True:
-                            
-                            print("Welcome to the deletion menu. Names are listed with numbers.")
-                            IO_Helpers.print_info("Welcome to the deletion menu here you can delete a name thats in your preset!")
+                        IO_Helpers.print_info("Welcome to the deletion menu here you can delete a name thats in your preset!")
+                        while stu_delete: 
                             core.pre_handle.name_print(preset_con)
-                            u_in = int(IO_Helpers.single_inp("Please enter the number that corrispondes to the name you want to delete. or type [-1] to go back to the student editor"))
+                            u_in = int(IO_Helpers.single_inp("Please enter the number that corrispondes to the name you want to delete. or type '-1' to go back to the student editor"))
+
                             # u_in = int(input("Please enter the number that corrispondes to the name you want to delete. or type [-1] to go back to the student editor"))
                             if u_in in range(len(preset_con['student_names'][0])):
                                 IO_Helpers.warning_out(f"You are about to delete the name {preset_con['student_names'][u_in]} from this preset.")
-                                y_n_in = IO_Helpers.yn_inp("Are you sure you want to do this? [Y/N] ").upper()
+                                y_n_in = IO_Helpers.yn_inp("Are you sure you want to do this?").upper()
                                 if y_n_in == 'Y':
                                     print(f"deleting {preset_con['student_names'][u_in]} from group!")
                                     preset_con['student_names'].pop(u_in)
@@ -219,9 +266,14 @@ class main():
                                 elif y_n_in == "N":
                                     IO_Helpers.print_info("Keeping name in group! \n Bringing you back to the deletion menu.")
                                     stu_delete = True
-                            if u_in == -1:
-                                IO_Helpers.print_info("Taking you back to the student editor!")
+                            elif u_in == -1:
+                                IO_Helpers.print_info('Taking you back to the student editor!')
+                                time.sleep(2)
                                 return False
+                            else:
+                                IO_Helpers.warning_out("It seems like you didnt input a valid option please choose a valid name and try again")
+                                stu_delete = True
+                                
                     # Name editor function       
                     def edit_choice2():
                         name_edit = True
@@ -276,8 +328,11 @@ class main():
                                     time.sleep(1.5)
 
                                     # Stage 1 split: Splits the pairs of names into the same list
-                                    if len(preset_con['black_list'][0]) <= 1:
-                                        
+                                    
+                                    
+                                    if preset_con['black_list'] == None or len(preset_con['black_list']) ==0:
+                                        sf_split = preset_con['black_list']
+                                    elif len(preset_con['black_list'][0]) <= 1:
                                         s1_split = preset_con['black_list'][0].split(', ') 
                                         sf_split = [x.split(' ') for x in s1_split]
                                         for i in sf_split:
@@ -288,9 +343,7 @@ class main():
                                                 
                                             except ValueError as not_found:
                                                 pass
-                                    else:
-                                        sf_split = preset_con['black_list'][0]
-                                       
+                                  
                                     sf_split.append([preset_con['student_names'][n1], preset_con['student_names'][n2]])
                                     preset_con.update({'black_list': sf_split})
                                     count = 1
@@ -303,6 +356,7 @@ class main():
 
                                 elif choice == "N":
                                     IO_Helpers.print_info("Sounds good taking you back to the blacklist menu in case you change your mind.")
+                                    time.sleep(2.5)
                                     bl_main = True
                                     
                     def edit_choice4():
@@ -316,7 +370,7 @@ class main():
                         take_back = None
                         while star_main == True:
                             take_back = None
-                            IO_Helpers.print_info("Welcome to the star student section!\n Names will appear with numbers in front of them please select the number that corresponds to the name you would like to choose.")
+                            IO_Helpers.print_info("Welcome to the star student section!\n Names will appear with numbers in front of them please select the number that corresponds to the name you would like to choose or type '-1' to go back to the student editor.")
                             core.pre_handle.name_print(preset_con)
                             stu_inp = int(IO_Helpers.single_inp("Enter number corresponding to the name you want"))
                             if stu_inp in range(len(preset_con['student_names'][0])):
@@ -388,18 +442,38 @@ class main():
                                 return False
                     def bad_inp():
                         IO_Helpers.err_out("Sorry that wasnt a valid option please try a differnt number.")
+                    
 
-                    options: dict = {
-                        1:edit_choice1,
-                        2:edit_choice2,
-                        3:edit_choice3,
-                        4:edit_choice4
-                    }
-                    run = options.get(edit_choice, bad_inp)
-                    run()
-                    if edit_choice == 0:
-                        main_editor = True
-                        student_editor = False
+                    # options: dict = {
+                    #     1:edit_choice1(),
+                    #     2:edit_choice2,
+                    #     3:edit_choice3,
+                    #     4:edit_choice4
+                    # }
+                    
+                    match edit_choice:
+                        case 0:
+                            main_editor = True
+                            student_editor = False 
+                            IO_Helpers.clear() 
+                            time.sleep(3)
+                        case 1:
+                            edit_choice1()
+                            time.sleep(3)
+                        case 2:
+                            edit_choice2()
+                            time.sleep(3)
+                        case 3:
+                            edit_choice3()
+                            time.sleep(3)
+                        case 4:
+                            edit_choice4()
+                            time.sleep(3)
+                        case default:
+                            bad_inp()
+                            time.sleep(5)
+                    
+                    
                         
             # Group Editor        
             if me_choice == 2:
@@ -413,7 +487,7 @@ class main():
                         IO_Helpers.print_info("Welcome to the group amount editor!\n Here you can edit the amount of groups you would like to generate!")
                         num_of_groups = int(IO_Helpers.single_inp('Please enter the amount of groups you would like.'))
                         if core.pre_handle.g_div(num_of_groups, names) == True:
-                            choice = IO_Helpers.yn_inp(f"Are you sure you want to make {num_of_groups}?")
+                            choice = IO_Helpers.yn_inp(f"Are you sure you want to make {num_of_groups} groups?")
                             if choice == "Y":
                                 IO_Helpers.print_info("Changes applied!\n Taking you back to the group editor")
                                 time.sleep(1.5)
@@ -424,10 +498,10 @@ class main():
                                 group_editor = True 
                         else:
                             IO_Helpers.warning_out("The amount of groups you entered will not have even members be warned some groups may contain more students than others.")
-                            temp = []
-                            for i in range(1, 100):
-                                if num_of_groups % i == 0:
-                                    temp.append(i)
+                            temp = [1]
+                            for possible_numbers in range(2, 100):
+                                if len(preset_con['student_names']) % possible_numbers == 0:
+                                    temp.append(possible_numbers)
                             IO_Helpers.print_info(f"These are sum nums you can use that will make an even amount of groups: {temp}")
                             temp.clear()
                             inp = IO_Helpers.yn_inp("Would you like to enter a new number of groups?")
@@ -527,8 +601,44 @@ class main():
                 return False
       # Done 9/14/23      
     def main_generation(preset):
+        print('got here')
+        if preset_con['black_list'] == None and len(preset_con['stared']) == 3:
+            print('got here')
+            temp_groups = []
+            print(preset_con['num_of_groups'])
+            num_per_group = len(preset_con['student_names']) // int(preset_con['num_of_groups'])
+            temp_names = preset['student_names'].copy()
+            main = True
+            fail_count = 0
+            
+            for _ in range(int(preset_con['num_of_groups'])):
+                temp_groups.append([])
+            while main:
+                fail_count = 0
+                for x, val in enumerate(temp_groups):
+                    running = True
+                    while running:   
+                        if len(temp_groups[x]) == num_per_group:
+                            if x + 1 == int(preset_con['num_of_groups']):
+                                IO_Helpers.print_groups(temp_groups, int(preset_con['num_of_groups']))
+                                try:
+                                    user_input = IO_Helpers.single_inp(r'Please press Enter when you are ready to go back to the main menu ')
+                                    # if user_input.lower() == 'done':
+                                    #     pass
+                                except Exception as err:
+                                    running = True
+                            main = False
+                            break
+                                
+                                    # running = True
+                                
+                            
+                        ran_name = random.choice(temp_names)
+                        temp_groups[x].append(ran_name)
+                        index = temp_names.index(ran_name)
+                        temp_names.pop(index)
         
-        if len(preset_con['black_list']) >=1 and len(preset_con['stared']) > 3:
+        elif len(preset_con['black_list']) >=1 and len(preset_con['stared']) > 3:
             temp_groups = []
             num_per_group = len(preset_con['student_names']) // int(preset_con['num_of_groups'])
             temp_names = preset['student_names'].copy()
@@ -544,7 +654,12 @@ class main():
                         if len(temp_groups[x]) == num_per_group:
                             if x + 1 == int(preset_con['num_of_groups']):
                                 IO_Helpers.print_groups(temp_groups, int(preset_con['num_of_groups']))
-                                time.sleep(5)
+                                try:
+                                    IO_Helpers.single_inp(r'Please press Enter when you are ready to go back to the main menu ')
+                                    # if user_input.lower() == 'done':
+                                    #     pass
+                                except Exception as err:
+                                    running = True
                             main = False
                             break
                              
@@ -596,7 +711,12 @@ class main():
                         if len(temp_groups[x]) == num_per_group:
                             if x + 1 == int(preset_con['num_of_groups']):
                                 IO_Helpers.print_groups(temp_groups, int(preset_con['num_of_groups']))
-                                time.sleep(5)
+                                try:
+                                    IO_Helpers.single_inp(r'Please press Enter when you are ready to go back to the main menu ')
+                                    # if user_input.lower() == 'done':
+                                    #     pass
+                                except Exception as err:
+                                    running = True
                             main = False
                             break
                         
@@ -639,13 +759,14 @@ class main():
                         if len(temp_groups[x]) == num_per_group:
                             if x + 1 == int(preset_con['num_of_groups']):
                                 IO_Helpers.print_groups(temp_groups, int(preset_con['num_of_groups']))
-                                done = int(IO_Helpers.yn_inp("Are you done looking at these groups?"))
-                                if done == "Y":
-                                    IO_Helpers.print_info("Sounds good taking you back to the main menu.")
-                                    main = False
-                                    break
-                                else:
-                                    IO_Helpers.warning_out("You can only say yes to this prompt")
+                                try:
+                                    IO_Helpers.single_inp(r'Please press Enter when you are ready to go back to the main menu ')
+                                    # if user_input.lower() == 'done':
+                                    #     pass
+                                except Exception as err:
+                                    running = True
+                            main = False
+                            break
                                     
                         ran_name = random.choice(temp_names)
                         star_check = core.gen_help.stared_check(preset_con, ran_name, temp_groups[x], num_per_group)
