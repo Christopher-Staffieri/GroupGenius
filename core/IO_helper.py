@@ -21,7 +21,7 @@ class IO_Helpers():
  |  '--'  | |  |\  \    `'  '-'  '('  '-'(_.-' |  |            |  '--'  |  |  `---.|  | \   |(_|  |  ('  '-'(_.-' \       / 
   `------'  `--' '--'     `-----'   `-----'    `--'             `------'   `------'`--'  `--'  `--'    `-----'     `-----'  
                                                     (Group Creation Tool)
-                                Made by Cj GH: im-solar https://github.com/Christopher-Staffieri/GroupGenius
+                                Made by Cj GH: Christopher-Staffieri https://github.com/Christopher-Staffieri/GroupGenius
         """
         
         
@@ -30,7 +30,7 @@ class IO_Helpers():
     
     def pre_import(Input: str) -> str: return filedialog.askopenfile()
     def single_inp(Input: str) -> str: return console.input(f"[purple3] {Input}")
-    def yn_inp(Input: str) -> str: return str(console.input(f"[purple3] {Input} [Y/N]").upper())
+    def yn_inp(Input: str) -> str: return console.input(f"[purple3] {Input} [Y/N]").upper()
     def backcheck(Input: int):
         if Input == "":
             return True
