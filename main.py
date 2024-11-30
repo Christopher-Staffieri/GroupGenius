@@ -6,7 +6,7 @@
 # Note: This is COMMAND PROMPT ONLY a gui version will be worked on but for now you get the windows console enjoy. 
 
 
-import re, time, os, datetime, csv, random, json, configparser, keyboard
+import re, time, os, datetime, csv, random, json, configparser
 import core.core as core
 from core.IO_helper import IO_Helpers
 from google_main.google_auth import google_auth
