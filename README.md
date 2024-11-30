@@ -1,4 +1,4 @@
-# To anyone viewing this currently after checking the code again a few mistakes are still present I apologize profusely i am working on fixing it and making it more presentable this is not how I normally put work out and am embarrassed this happened.
+## Program is completely fixed code could still be refactored and comments could be added but I am trying to juggle multiple projects currently so there is no ETA on when this will be done.
 # Group Genius
 ## (Group Creation Tool)
 
