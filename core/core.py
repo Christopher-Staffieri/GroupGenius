@@ -1,6 +1,8 @@
 import time, os, random
-from core.IO_helper import IO_Helpers 
-
+# import .IO_helper 
+from core.IO_helper import IO_Helpers
+# from .IO_helper import IO_Helpers
+# from IO_helper import IO_Helpers
 
 
 
@@ -27,15 +29,14 @@ class pre_handle():
                 IO_Helpers.print_info(f'[{i}], {x}')
                 return preset_files
                 
-                
-        
-                
+      
                 
     # Put into IO helpers
     def name_print(preset_con):
         for x in range(len(preset_con['student_names'])):
                 i = preset_con['student_names'][x]
-                IO_Helpers.print_info('[',x,']', i)
+                IO_Helpers.print_info(f'[{x}] - {i}')
+
                 
     
 class gen_help():   
