@@ -1,6 +1,8 @@
-Any application that uses OAuth 2.0 to access Google APIs must have authorization credentials that identify the application to Google's OAuth 2.0 server. The following steps explain how to create credentials for your project. Your applications can then use the credentials to access APIs that you have enabled for that project.
+Any application that uses OAuth 2.0 to access Google APIs must have authorization credentials that identify the application to Google's OAuth 2.0 server. 
+The following steps explain how to create credentials for your project. 
+Your applications can then use the credentials to access APIs that you have enabled for that project.
 
-Go to the Credentials page.
+Go to the Credentials page. https://console.cloud.google.com/apis/credentials
 Click Create credentials > OAuth client ID.
 Select the Desktop application application type.
 Name your OAuth 2.0 client and click Create
